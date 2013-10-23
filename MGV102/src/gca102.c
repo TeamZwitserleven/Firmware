@@ -28,6 +28,9 @@
 #define RELAY_LEFT GP4  // S1
 #define RELAY_RIGHT GP5 // S2
 
+#define SET_PANIC { PANIC = 0; }
+#define SET_NO_PANIC { PANIC = 1; }
+
 __xdata __at 0x2007 unsigned int CONFIG = 0x31c4;
 
 static void InitializeIO() 
@@ -35,7 +38,7 @@ static void InitializeIO()
 	GPIO = 0x0;
 	ANSEL = 0;		/* Digital IO */
 	CMCON = 0x07;	/* Set GP2:0 to digital IO */
-	TRISIO = 0x0C;	/* GP2,4 input */
+	TRISIO = 0x0C;	/* GP2,3 input */
 }
 
 static void WaitMS(unsigned int ms) 
@@ -110,8 +113,9 @@ void main()
 	        WaitPulse();
 	}
 
-        // Initialize
-        lastFbState = 0xFF & UxAB_MASK;
+    // Initialize
+    lastFbState = 0xFF & UxAB_MASK;
+	SET_NO_PANIC;
         
         // Perform main loop for ever
 	while (1) {
@@ -120,15 +124,15 @@ void main()
 	                
 	        if (curFbState != lastFbState) {	        
 	                lastFbState = curFbState;
-	                detectionOnXA = (U1AB == 0);
-        	        detectionOnYB = (U3AB == 0);
+	                detectionOnXA = (U3AB == 0);
+        	        detectionOnYB = (U1AB == 0);
 	                
 	                // Detect change in input
         	        if (detectionOnXA && detectionOnYB) {
 	                        // Input on both outer ends of the reverse loop. Panic
-	                        PANIC = 1;
+	                        SET_PANIC;
 	                } else {
-							PANIC = 0;
+							SET_NO_PANIC;
 	                        if (detectionOnXA) {
                 	                // Switch to X
 	                                SetLed(0);  
@@ -136,7 +140,7 @@ void main()
 	                                // Wait to led changes settle
 	                                WaitMS(2);
         	                } else if (detectionOnYB) {
-                	                // Switch to X
+                	                // Switch to Y
 	                                SetLed(1);
 	                                SwitchRelais(1); 
 	                                // Wait to led changes settle
