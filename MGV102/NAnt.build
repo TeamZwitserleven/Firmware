@@ -1,0 +1,75 @@
+﻿<?xml version="1.0"?>
+<project name="MGV81" default="build" basedir=".">
+
+	<property name="basedir" value="${project::get-base-directory()}"/>
+	<property name="builddir" value="${basedir}\Build"/>
+	<property name="srcdir" value="${basedir}\src"/>
+
+	<property name="sdcc" value="sdcc.exe"/>
+	<property name="device" value="16F628"/>
+
+        <target name="clean" description="remove all generated files">
+		<delete dir="${builddir}" />
+        </target>
+
+	<target name="prepare">
+		<mkdir dir="${builddir}"/>
+		<mkdir dir="${builddir}\obj"/>
+	</target>
+
+	<target name="compile" depends="clean, prepare">
+		<!-- Compile -->
+		<exec program="${sdcc}">
+			<arg value="-mpic14"/>
+			<arg value="-p16F628"/>
+			<arg value="-o"/>
+			<arg value="${builddir}\obj\main.o"/>
+			<arg value="-c"/>
+			<arg value="${srcdir}\main.c"/>
+		</exec>
+		<exec program="${sdcc}">
+			<arg value="-mpic14"/>
+			<arg value="-p12F675"/>
+			<arg value="-o"/>
+			<arg value="${builddir}\obj\gca102.o"/>
+			<arg value="-c"/>
+			<arg value="${srcdir}\gca102.c"/>
+		</exec>
+		<!-- Link -->
+		<exec program="${sdcc}">
+			<arg value="-mpic14"/>
+			<arg value="-p${device}"/>
+			<arg value="-Wl-c"/>
+			<arg value="-Wl-m"/>
+			<arg value="-Wl-r"/>
+			<arg value="-o"/>
+			<arg value="${builddir}\Mgv102.hex"/>
+			<arg value="${builddir}\obj\main.o"/>
+		</exec>
+		<exec program="${sdcc}">
+			<arg value="-mpic14"/>
+			<arg value="-p12F675"/>
+			<arg value="-Wl-c"/>
+			<arg value="-Wl-m"/>
+			<!-- arg value="-Wl-r"/ -->
+			<arg value="-o"/>
+			<arg value="${builddir}\Gca102.hex"/>
+			<arg value="${builddir}\obj\gca102.o"/>
+		</exec>
+	</target>
+
+        <target name="build" depends="compile" description="Compile">
+        </target>
+
+        <target name="zip" depends="build" description="ZIP">
+		<zip zipfile="${basedir}\Build\Mgv102.zip">
+			<fileset basedir="${srcdir}">
+				<include name="**/*"/>
+			</fileset>
+			<fileset basedir="${builddir}">
+				<include name="*.hex"/>
+			</fileset>
+		</zip>
+        </target>
+
+</project>
