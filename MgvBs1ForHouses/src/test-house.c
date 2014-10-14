@@ -1,5 +1,5 @@
 /*
- Modelspoorgroep Venlo BS-1 Firmware For Houses
+ BS-1 Firmware For Houses
 
  Copyright (C) Ewout Prangsma <ewout@prangsma.net>
 
