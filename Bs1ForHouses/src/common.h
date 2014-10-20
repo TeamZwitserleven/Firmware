@@ -32,8 +32,8 @@ __xdata __at 0x2007 unsigned int CONFIG = 0x31c4;
 #endif
 
 #define MORNING 0x00
-#define AFTERNOON 0x02
-#define EVENING 0x01
+#define AFTERNOON 0x01
+#define EVENING 0x02
 #define NIGHT 0x03
 
 #define LED1 GPIO2
