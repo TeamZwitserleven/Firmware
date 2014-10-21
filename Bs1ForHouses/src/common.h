@@ -42,9 +42,20 @@ __xdata __at 0x2007 unsigned int CONFIG = 0x31c4;
 #define LED4 GPIO5
 
 #define READ_CLOCK()    (((GPIO) >> 3) & 0x03)
-#define LIGHT_ON(mask)  { if (mask < 50) mask++; }
+#define LIGHT_ON(mask)  { if (mask < 50) { mask++; } else { mask = 50; } }
 #define LIGHT_OFF(mask) { if (mask > 0) mask--; } 
-#define SETOUTPUT(i, mask, port) { if (i < mask) { port = BIT_ON; } else { port = BIT_OFF; } }
+#define LIGHT_WELDER(mask) { mask = 255; } 
+#define SETOUTPUT(i, mask, cnt, idx, port) { \
+	if (mask == 255) { \
+		if (cnt == 0) { \
+			if (idx < sizeof(arr)-1) { idx++; } else { idx = 0; } \
+			cnt = arr[idx]; \
+			if ((idx & 0x01) && (cnt != 255)) { port = BIT_ON; } else { port = BIT_OFF; } \
+		} else { \
+			cnt--; \
+		} \
+	} \
+	else if (i < mask) { port = BIT_ON; } else { port = BIT_OFF; } }
 
 void InitializeIO() 
 {
@@ -60,8 +71,25 @@ static unsigned char led1;
 static unsigned char led2;
 static unsigned char led3;
 static unsigned char led4;
+static unsigned char cnt1 = 0;
+static unsigned char cnt2 = 0;
+static unsigned char cnt3 = 0;
+static unsigned char cnt4 = 0;
+static unsigned char idx1 = 0;
+static unsigned char idx2 = 0;
+static unsigned char idx3 = 0;
+static unsigned char idx4 = 0;
 static unsigned char i;
 static unsigned char j;
+__code static unsigned char arr[] = { 
+	254, 254, 200, 120, 170, 175, 250, 200, 254, 200, 
+	254, 254, 200, 120, 170, 175, 250, 200, 254, 200, 
+	255, 255, 254, 255, 
+	120, 190, 250, 180, 200, 190, 255, 255, 255, 255,
+	254, 254, 200, 120, 170, 175, 250, 200, 254, 200, 
+	255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 
+	255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 
+	};
 
 /* Process clock value in this method */
 void ProcessInput();
@@ -83,10 +111,10 @@ void main()
 		// Set outputs
 		for (i = 0; i < 51; i++) 
 		{
-			SETOUTPUT(i, led1, LED1);
-			SETOUTPUT(i, led2, LED2);
-			SETOUTPUT(i, led3, LED3);
-			SETOUTPUT(i, led4, LED4);
+			SETOUTPUT(i, led1, cnt1, idx1, LED1);
+			SETOUTPUT(i, led2, cnt2, idx2, LED2);
+			SETOUTPUT(i, led3, cnt3, idx3, LED3);
+			SETOUTPUT(i, led4, cnt4, idx4, LED4);
 			
 			for (j = 0; j < 25; j++);
 		}		
