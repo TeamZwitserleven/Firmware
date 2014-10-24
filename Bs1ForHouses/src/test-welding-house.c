@@ -24,7 +24,7 @@ void ProcessInput()
 {
 	if (clock == MORNING) 
 	{
-		LIGHT_ON(led1)
+		LIGHT_WELDER(led1)
 		LIGHT_OFF(led2)
 		LIGHT_OFF(led3)
 		LIGHT_OFF(led4)
@@ -32,7 +32,7 @@ void ProcessInput()
 	else if (clock == AFTERNOON)
 	{
 		LIGHT_OFF(led1)
-		LIGHT_ON(led2)
+		LIGHT_WELDER(led2)
 		LIGHT_OFF(led3)
 		LIGHT_OFF(led4)
 	}
@@ -40,7 +40,7 @@ void ProcessInput()
 	{
 		LIGHT_OFF(led1)
 		LIGHT_OFF(led2)
-		LIGHT_ON(led3)
+		LIGHT_WELDER(led3)
 		LIGHT_OFF(led4)
 	}
 	else if (clock == NIGHT)
@@ -48,6 +48,6 @@ void ProcessInput()
 		LIGHT_OFF(led1)
 		LIGHT_OFF(led2)
 		LIGHT_OFF(led3)
-		LIGHT_ON(led4)
+		LIGHT_WELDER(led4)
 	}
 }
