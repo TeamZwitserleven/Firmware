@@ -1,5 +1,5 @@
 /*
- Modelspoorgroep Venlo BS-1 Firmware For Signals
+ Team Zwitserleven BS-1 Firmware For Signals
 
  Copyright (C) Ewout Prangsma <ewout@prangsma.net>
 
@@ -21,7 +21,7 @@
 #include <pic12f675.h>
 
 // Configuration word
-unsigned int at 0x2007 CONFIG = 0x31c4;
+unsigned int __at 0x2007 CONFIG = 0x31c4;
 
 #ifdef CMNGND
 	#define BIT_ON 1
